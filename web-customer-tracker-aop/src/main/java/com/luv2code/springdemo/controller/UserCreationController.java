@@ -40,7 +40,7 @@ public class UserCreationController {
 				return "createUser";
 			} else {
 				User user = new User();
-				user.setUsername(userform.getUsername());
+				user.setUserName(userform.getUsername());
 				user.setFirstName(userform.getFirstName());
 				user.setLastName(userform.getLastName());
 				user.setPassword(user.getPassword());

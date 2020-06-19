@@ -86,47 +86,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth)
 			throws Exception {
 
-		auth.jdbcAuthentication().dataSource(securityDataSource());
+		auth.jdbcAuthentication().dataSource(securityDataSource())
+				.passwordEncoder(passwordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/", "/home", "/createUser")
-				.permitAll().anyRequest().authenticated()
-				.antMatchers("/customer/**").hasRole("EMPLOYE")
-				.antMatchers("/leaders/**").hasRole("MANAGER") // Peut accéder à
-																// /leaders si
-																// role MANAGER
-				.antMatchers("/systems/**").hasRole("ADMIN") // Peut accéder à
-																// /systems si
-																// role
-																// ADMIN.and()
-				.and().formLogin().loginPage("/showMyLoginPage") // Acces à la
-																	// page de
-																	// login
-				.loginProcessingUrl("/authentificateTheUser") // URL à appeler
-																// par la page
-																// de login si
-																// la connexion
-																// est ok
-				.permitAll().and().logout().permitAll()// Tout le monde peut se
-														// deconnecter
-				.and().exceptionHandling().accessDeniedPage("/access-denied");// Si
-																				// une
-																				// erruer
-																				// survient
-																				// car
-																				// pas
-																				// d'acces
-																				// à
-																				// la
-																				// page
-																				// renvoyé
-																				// vers
-																				// la
-																				// page
-																				// spécifique
-																				// }
+		http.authorizeRequests().antMatchers("/customer/**").hasRole("EMPLOYE")
+				.antMatchers("/leaders/**").hasRole("MANAGER")
+				.antMatchers("/systems/**").hasRole("ADMIN")
+				.antMatchers("/", "/home", "/createUser").permitAll()
+				.anyRequest().authenticated().and().formLogin()
+				.loginPage("/showMyLoginPage")
+				.loginProcessingUrl("/authentificateTheUser").permitAll().and()
+				.logout().permitAll().and().exceptionHandling()
+				.accessDeniedPage("/access-denied");
 	}
 
 	private Properties hibernateProperties() {

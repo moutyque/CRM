@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<properties>
-		<springsecurity.version>5.1.0.RELEASE</springsecurity.version>
+		<springsecurity.version>5.3.3.RELEASE</springsecurity.version>
 	</properties>
 	<dependencies>
 

@@ -1,5 +1,6 @@
 package com.luv2code.springdemo.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,10 +13,17 @@ public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 
-	public Role(String string) {
-		this.name = string;
+	@Column(name = "name")
+	private String name;
+
+	public Role() {
+	}
+
+	public Role(String name) {
+		this.name = name;
 	}
 
 	public Long getId() {
@@ -34,5 +42,8 @@ public class Role {
 		this.name = name;
 	}
 
-	private String name;
+	@Override
+	public String toString() {
+		return "Role{" + "id=" + id + ", name='" + name + '\'' + '}';
+	}
 }
