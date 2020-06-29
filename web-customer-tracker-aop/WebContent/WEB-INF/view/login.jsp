@@ -22,7 +22,7 @@
 			Password :
 			<input type="password" name="password">
 		</p>
-		<input type="submit" name="login">
+		<input type="submit" value="login">
 		</form:form>
 		
 		<form:form method="GET" action="${pageContext.request.contextPath}/createUser">

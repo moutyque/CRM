@@ -8,14 +8,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.luv2code.springdemo.entity.User;
-@Component
+
+@Repository
 public class UserDAOImpl implements UserDAO {
 
 	@Autowired
-	@Qualifier("securitySessioFactory")
+	@Qualifier("securitySessionFactory")
 	private SessionFactory sessionFactory;
 
 	@Override
@@ -33,6 +35,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	@Transactional("securtiyTransactionManager")
 	public User getUser(String username) {
 		Session session = sessionFactory.getCurrentSession();
 		Query<User> query = session
@@ -49,7 +52,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void deleteCustomer(User user) {
+	public void deleteUser(User user) {
 		Session session = sessionFactory.getCurrentSession();
 		session.delete(user);
 	}

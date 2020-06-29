@@ -97,6 +97,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean(name = "transactionManager")
+	@Autowired
 	@Qualifier("sessionFactory")
 	public HibernateTransactionManager transactionManager(
 			SessionFactory sessionFactory) {

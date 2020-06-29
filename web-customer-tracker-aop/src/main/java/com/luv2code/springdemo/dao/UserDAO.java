@@ -11,6 +11,6 @@ public interface UserDAO {
 
 	public User getUser(String username);
 
-	public void deleteCustomer(User user);
+	public void deleteUser(User user);
 
 }

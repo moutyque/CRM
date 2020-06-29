@@ -10,7 +10,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -23,14 +22,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableTransactionManagement
-@ComponentScan(basePackages = "com.luv2code.springdemo")
 @PropertySource("classpath:security-persistence-mysql.properties")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -41,7 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsService userService;
 
-	@Bean(name = "securitySessioFactory")
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+	@Bean(name = "securitySessionFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(securityDataSource());
@@ -86,8 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth)
 			throws Exception {
 
-		auth.jdbcAuthentication().dataSource(securityDataSource())
-				.passwordEncoder(passwordEncoder());
+		auth.authenticationProvider(authenticationProvider());
 	}
 
 	@Override
@@ -98,8 +96,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/", "/home", "/createUser").permitAll()
 				.anyRequest().authenticated().and().formLogin()
 				.loginPage("/showMyLoginPage")
-				.loginProcessingUrl("/authentificateTheUser").permitAll().and()
-				.logout().permitAll().and().exceptionHandling()
+				.loginProcessingUrl("/authentificateTheUser")
+				.successHandler(customAuthenticationSuccessHandler).permitAll()
+				.and().logout().permitAll().and().exceptionHandling()
 				.accessDeniedPage("/access-denied");
 	}
 
@@ -117,7 +116,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean(name = "securtiyTransactionManager")
-	@Qualifier("securitySessioFactory")
+	@Autowired
+	@Qualifier("securitySessionFactory")
 	public HibernateTransactionManager transactionManager(
 			SessionFactory sessionFactory) {
 

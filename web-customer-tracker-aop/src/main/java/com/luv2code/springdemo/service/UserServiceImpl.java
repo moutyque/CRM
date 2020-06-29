@@ -23,8 +23,10 @@ public class UserServiceImpl implements UserService {
 	private UserDAO userDAO;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) {
-		User user = userDAO.getUser(username);
+	// @Transactional("securtiyTransactionManager")
+	public UserDetails loadUserByUsername(String userName)
+			throws UsernameNotFoundException {
+		User user = userDAO.getUser(userName);
 		if (user == null) {
 			throw new UsernameNotFoundException(
 					"Invalid username or password.");
@@ -35,20 +37,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	@Transactional("securtiyTransactionManager")
+	// @Transactional("securtiyTransactionManager")
 	public User findUser(String username) {
 		return userDAO.getUser(username);
 	}
 
 	@Override
+	// @Transactional("securtiyTransactionManager")
 	public void saveUser(User user) {
-		userDAO.saveUser(user);
+		userDAO.saveUser(user);// TODO : modify to get the role from DB
 
 	}
 
 	@Override
+	// @Transactional("securtiyTransactionManager")
 	public void deleteUser(User user) {
-		userDAO.deleteCustomer(user);
+		userDAO.deleteUser(user);
 	}
 
 	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(
